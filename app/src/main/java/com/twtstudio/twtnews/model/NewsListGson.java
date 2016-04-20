@@ -7,7 +7,7 @@ import java.util.List;
  * 新闻列表用于配合gson框架
  */
 public class NewsListGson {
-    public int error_code;
-    public String message;
-    public List<NewsBean> newsBeanList;
+    public  int error_code;
+    public  String message;
+    public  List<NewsBean> data;
 }

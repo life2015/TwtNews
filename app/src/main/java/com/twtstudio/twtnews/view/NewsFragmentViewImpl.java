@@ -1,14 +1,17 @@
 package com.twtstudio.twtnews.view;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.twtstudio.twtnews.R;
 import com.twtstudio.twtnews.presenter.NewsListPresenter;
@@ -20,16 +23,17 @@ import com.twtstudio.twtnews.presenter.RecyclerViewAdapter;
  */
 public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implements NewsFragmentView {
 
-    private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private NewsListPresenter mNewsListPresenter;
-    RecyclerViewAdapter mRecyclerViewAdapter;
+    private static RecyclerView mRecyclerView;
+    private static SwipeRefreshLayout mSwipeRefreshLayout;
+    private  NewsListPresenter mNewsListPresenter;
+    private static RecyclerViewAdapter mRecyclerViewAdapter;
     private boolean loading=false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNewsListPresenter=new NewsListPresenterImpl(getArguments().getInt("index"));
+
+
     }
 
     public static NewsFragmentViewImpl newInstance(int index) {
@@ -43,10 +47,22 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.content_main,container,false);
         mRecyclerView= (RecyclerView) view.findViewById(R.id.recyclerView);
         mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        if (mSwipeRefreshLayout==null){Log.d("jcy","view null");}else {Log.d("jcy","view ok");}
+        mSwipeRefreshLayout.setColorSchemeColors(Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN);
+        mNewsListPresenter=new NewsListPresenterImpl(getArguments().getInt("index"));
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle=getArguments();
+                Log.d("jcy","post");
+                mNewsListPresenter.refresh();
+                mRecyclerView.setAdapter(mRecyclerViewAdapter);
+            }
+        });
         final LinearLayoutManager layoutManger=new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManger);
         mRecyclerView.setHasFixedSize(true);
@@ -61,16 +77,19 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 if (!loading&&lastcount+2>=totalcount)
                 {
                     Bundle bundle=getArguments();
-                    mNewsListPresenter.refresh(bundle.getInt("index"));
+                    //mNewsListPresenter.refresh();
+                    System.out.println("已获取");
+                    //mRecyclerView.setAdapter(mRecyclerViewAdapter);
+                    Log.d("jcy",".....");
                 }
             }
         });
-
+        return view;
     }
 
     @Override
-    public void refresh(RecyclerView ) {
-
+    public void refresh(boolean flag ) {
+        mSwipeRefreshLayout.setRefreshing(flag);
     }
 
     @Override
@@ -80,6 +99,11 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
 
     @Override
     public void showError() {
+        Toast.makeText(getActivity(),"网络错误",Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public RecyclerViewAdapter getAdapter() {
+        return mRecyclerViewAdapter;
     }
 }

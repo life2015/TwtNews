@@ -9,7 +9,7 @@ public interface NewsListPresenter
      * 刷新新闻界面
      */
 
-    void refresh(int TYPE);
+    void refresh();
 
     /**
      * 加载下一页新闻

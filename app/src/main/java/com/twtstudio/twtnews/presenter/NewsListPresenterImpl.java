@@ -26,10 +26,14 @@ public class NewsListPresenterImpl implements NewsListPresenter{
 
 
     @Override
-    public void refresh(int TYP,List<NewsBean> newsBeanList) {
+    public void refresh() {
+        newsFragmentView.refresh(true);
         List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
         newsBeanList.addAll(beanList);
-        newsFragmentView.refresh(beanList);
+        RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
+        adapter.setNewses(newsBeanList);
+        adapter.notifyDataSetChanged();
+        newsFragmentView.refresh(false);
     }
 
     @Override

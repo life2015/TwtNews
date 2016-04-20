@@ -39,7 +39,7 @@ public class NetUtils {
         Gson gson=new Gson();
         NewsListGson newsListGson=gson.fromJson(jsonString,NewsListGson.class);
         if (newsListGson.error_code==-1)
-        {return newsListGson.newsBeanList;}
+        {return newsListGson.data;}
         else return null;
     }
 }

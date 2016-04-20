@@ -1,5 +1,7 @@
 package com.twtstudio.twtnews.view;
 
+import com.twtstudio.twtnews.presenter.RecyclerViewAdapter;
+
 /**
  * Created by 冀辰阳 on 2016/4/19.
  */
@@ -8,7 +10,7 @@ public interface NewsFragmentView {
     /**
      * 刷新view的界面
      */
-    void refresh();
+    void refresh(boolean flag);
 
     /**
      * 加载下一页
@@ -18,4 +20,9 @@ public interface NewsFragmentView {
      * 错误提示
      */
     void showError();
+
+    /**
+     * 获取fragment的adapter
+     */
+    RecyclerViewAdapter getAdapter();
 }
