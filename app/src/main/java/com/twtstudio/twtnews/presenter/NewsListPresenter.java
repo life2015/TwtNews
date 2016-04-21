@@ -14,7 +14,7 @@ public interface NewsListPresenter
     /**
      * 加载下一页新闻
      */
-    void loadNews();
+    void loadNews(int Page);
 
     /**
      * 打开新闻详情列表

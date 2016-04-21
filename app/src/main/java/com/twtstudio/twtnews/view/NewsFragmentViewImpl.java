@@ -4,6 +4,7 @@ package com.twtstudio.twtnews.view;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     private  NewsListPresenter mNewsListPresenter;
     private static RecyclerViewAdapter mRecyclerViewAdapter;
     private boolean loading=false;
-
+    private int PAGE=2;//要获取的下一页
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +62,17 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 Log.d("jcy","post");
                 mNewsListPresenter.refresh();
                 mRecyclerView.setAdapter(mRecyclerViewAdapter);
+                PAGE=2;
+            }
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Bundle bundle=getArguments();
+                Log.d("jcy","post");
+                mNewsListPresenter.refresh();
+                mRecyclerView.setAdapter(mRecyclerViewAdapter);
+                PAGE=2;
             }
         });
         final LinearLayoutManager layoutManger=new LinearLayoutManager(getActivity());
@@ -77,7 +89,10 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 if (!loading&&lastcount+2>=totalcount)
                 {
                     Bundle bundle=getArguments();
-                    //mNewsListPresenter.refresh();
+                    loading=true;
+                    mNewsListPresenter.loadNews(PAGE);
+                    loading=false;
+                    PAGE++;
                     System.out.println("已获取");
                     //mRecyclerView.setAdapter(mRecyclerViewAdapter);
                     Log.d("jcy",".....");
