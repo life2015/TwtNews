@@ -1,5 +1,6 @@
 package com.twtstudio.twtnews.presenter;
 
+import com.twtstudio.twtnews.model.GetNewsImpl2;
 import com.twtstudio.twtnews.model.GetNewsList;
 import com.twtstudio.twtnews.model.GetNewsListImpl;
 import com.twtstudio.twtnews.model.NewsBean;
@@ -19,7 +20,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     private List<NewsBean> newsBeanList=new ArrayList<>();
     private int TYPE;
     public NewsListPresenterImpl(int TYPE) {
-        this.getNewsList=new GetNewsListImpl();
+        this.getNewsList=new GetNewsImpl2();
         newsFragmentView=new NewsFragmentViewImpl();
         this.TYPE=TYPE;
     }
@@ -28,6 +29,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     @Override
     public void refresh() {
         newsFragmentView.refresh(true);
+
         List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
         newsBeanList.addAll(beanList);
         RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
