@@ -27,41 +27,38 @@ public class GetNewsListImpl2 implements GetNewsList {
 
     @Override
     public List<NewsBean> getFirstPage(int Type) {
-        return getNews(Type,1);
+        return getNews(Type, 1);
 
     }
 
     @Override
-    public List<NewsBean> getMore(int Type, int page)
-    {
-        return getNews(Type,page);
+    public List<NewsBean> getMore(int Type, int page) {
+        return getNews(Type, page);
     }
 
 
+    public List<NewsBean> getNews(int TYPE, int PAGE) {
+        URL url = null;
+        List<NewsBean> tempList = new ArrayList<>();
+        String urlString = API_BASE + String.valueOf(TYPE) + API_NEWS_PAGE + String.valueOf(PAGE);
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
-
-        public List<NewsBean> getNews(int TYPE,int PAGE) {
-            URL url=null;
-            List<NewsBean> tempList = new ArrayList<>();
-            String urlString = API_BASE + String.valueOf(TYPE) + API_NEWS_PAGE + String.valueOf(PAGE);
-            try {
-                url = new URL(urlString);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                System.out.println("开始获取");
-                tempList = NetUtils.getJsonData(NetUtils.readStream(url.openStream()));
-                Log.d("jcy", "获取");
+        try {
+            System.out.println("开始获取");
+            tempList = NetUtils.getJsonData(NetUtils.readStream(url.openStream()));
+            Log.d("jcy", "获取");
 //                System.out.println(tempList);
 //                beanList.addAll(tempList);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return tempList;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return tempList;
+    }
 
 
 }

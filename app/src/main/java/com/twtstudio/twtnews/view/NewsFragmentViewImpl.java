@@ -33,10 +33,11 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     public static NewsFragmentViewImpl newInstance(int index) {
+
+
 
         Bundle args = new Bundle();
         args.putInt("index",index);
@@ -57,20 +58,16 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                Bundle bundle=getArguments();
                 Log.d("jcy","post");
                 mNewsListPresenter.refresh();
-                mRecyclerView.setAdapter(mRecyclerViewAdapter);
                 PAGE=2;
             }
         });
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Bundle bundle=getArguments();
                 Log.d("jcy","post");
                 mNewsListPresenter.refresh();
-                mRecyclerView.setAdapter(mRecyclerViewAdapter);
                 PAGE=2;
             }
         });
@@ -90,7 +87,6 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                     Bundle bundle=getArguments();
                     loading=true;
                     mNewsListPresenter.loadNews(PAGE);
-                    //loading=false;
                     PAGE++;
                     System.out.println("已获取");
                     //mRecyclerView.setAdapter(mRecyclerViewAdapter);
@@ -125,4 +121,10 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     public void setLoading(boolean loading) {
         this.loading=loading;
     }
+
+    @Override
+    public void notifySet(RecyclerViewAdapter adapter) {
+        mRecyclerView.setAdapter(adapter);
+    }
+
 }

@@ -26,6 +26,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     private int TYPE;
     Handler handler=new MyHandler();
     FutureTask<List<NewsBean>> futureTask;
+    FutureTask<List<NewsBean>> futureTask0;
     public NewsListPresenterImpl(int TYPE) {
         this.getNewsList=new GetNewsListImpl2();
         this.newsFragmentView=new NewsFragmentViewImpl();
@@ -37,23 +38,9 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     public void refresh() {
         newsFragmentView.refresh(true);
         newsBeanList.clear();
-        FutureTask<List<NewsBean>> futureTask=new FutureTask<>(new AsyncGetNews());
-        new Thread(futureTask).start();
+        futureTask0=new FutureTask<>(new AsyncGetNews());
+        new Thread(futureTask0).start();
         //List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
-        List<NewsBean> beanList=new ArrayList<>();
-            try {
-                beanList=futureTask.get();
-                newsBeanList.addAll(beanList);
-                RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
-                adapter.setNewses(newsBeanList);
-                adapter.notifyDataSetChanged();
-                newsFragmentView.refresh(false);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
 
     }
 
@@ -69,14 +56,18 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     public void showContent() {
 
     }
+    //获取第一页新闻的
     class AsyncGetNews implements Callable<List<NewsBean>>
     {
 
         @Override
         public List<NewsBean> call() throws Exception {
-            return getNewsList.getFirstPage(TYPE);
+            List<NewsBean> beanList=getNewsList.getFirstPage(TYPE);
+            handler.sendEmptyMessage(0x234);
+            return beanList;
         }
     }
+    //获取后面的新闻
     class AsyncGetMoreNews implements Callable<List<NewsBean>>
     {
         int Page;
@@ -93,6 +84,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
             return result;
         }
     }
+
     class MyHandler extends Handler
     {
         @Override
@@ -113,7 +105,23 @@ public class NewsListPresenterImpl implements NewsListPresenter{
                     e.printStackTrace();
                 }
             }
-            System.out.println("消息已经处理");
+            else if (msg.what==0x234)
+            {
+                List<NewsBean> beanList=new ArrayList<>();
+                try {
+                    beanList=futureTask0.get();
+                    newsBeanList.addAll(beanList);
+                    RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
+                    newsFragmentView.notifySet(adapter);
+                    adapter.setNewses(newsBeanList);
+                    adapter.notifyDataSetChanged();
+                    newsFragmentView.refresh(false);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

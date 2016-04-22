@@ -22,6 +22,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.twtstudio.twtnews.R;
 import com.twtstudio.twtnews.model.NewsBean;
+import com.twtstudio.twtnews.view.NewsContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,18 +145,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
             //为btn_share btn_readMore cardView设置点击事件
-            /*********/
-//            personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, NewsContent.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
-//                    bundle.putString("bitmap_url",newses.get(j).getPic());
-//                    intent.putExtras(bundle);
-//                    context.startActivity(intent);
-//                }
-//            });
+            personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, NewsContent.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("index", String.valueOf(newses.get(j).getIndex()));
+                    bundle.putString("bitmap_url",newses.get(j).getPic());
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
 
 //            personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
 //                @Override
