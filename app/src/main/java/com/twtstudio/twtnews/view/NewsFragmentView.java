@@ -25,4 +25,5 @@ public interface NewsFragmentView {
      * 获取fragment的adapter
      */
     RecyclerViewAdapter getAdapter();
+    void setLoading(boolean loading);
 }

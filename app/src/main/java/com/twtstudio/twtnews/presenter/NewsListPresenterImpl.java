@@ -104,6 +104,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
                     beanList=futureTask.get();
                     newsBeanList.addAll(beanList);
                     RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
+                    newsFragmentView.setLoading(false);
                     adapter.setNewses(newsBeanList);
                     adapter.notifyDataSetChanged();
                 } catch (InterruptedException e) {

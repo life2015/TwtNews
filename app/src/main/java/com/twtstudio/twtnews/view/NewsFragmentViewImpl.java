@@ -28,12 +28,11 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     private static SwipeRefreshLayout mSwipeRefreshLayout;
     private  NewsListPresenter mNewsListPresenter;
     private static RecyclerViewAdapter mRecyclerViewAdapter;
-    private boolean loading=false;
+    private static boolean loading=false;
     private int PAGE=2;//要获取的下一页
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
     }
 
@@ -52,9 +51,9 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
         View view=inflater.inflate(R.layout.content_main,container,false);
         mRecyclerView= (RecyclerView) view.findViewById(R.id.recyclerView);
         mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
-        if (mSwipeRefreshLayout==null){Log.d("jcy","view null");}else {Log.d("jcy","view ok");}
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN);
         mNewsListPresenter=new NewsListPresenterImpl(getArguments().getInt("index"));
+        mRecyclerViewAdapter=new RecyclerViewAdapter(null,getActivity());
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -79,7 +78,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
         mRecyclerView.setLayoutManager(layoutManger);
         mRecyclerView.setHasFixedSize(true);
         //实例化adapter，后面传给presenter
-        mRecyclerViewAdapter=new RecyclerViewAdapter(null,getActivity());
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -91,7 +90,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                     Bundle bundle=getArguments();
                     loading=true;
                     mNewsListPresenter.loadNews(PAGE);
-                    loading=false;
+                    //loading=false;
                     PAGE++;
                     System.out.println("已获取");
                     //mRecyclerView.setAdapter(mRecyclerViewAdapter);
@@ -120,5 +119,10 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     @Override
     public RecyclerViewAdapter getAdapter() {
         return mRecyclerViewAdapter;
+    }
+
+    @Override
+    public void setLoading(boolean loading) {
+        this.loading=loading;
     }
 }
