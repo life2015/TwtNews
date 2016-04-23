@@ -32,4 +32,5 @@ public interface NewsFragmentView {
      * @param adapter
      */
     void notifySet(RecyclerViewAdapter adapter);
+    boolean isLoading();
 }

@@ -24,11 +24,11 @@ import com.twtstudio.twtnews.presenter.RecyclerViewAdapter;
  */
 public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implements NewsFragmentView {
 
-    private static RecyclerView mRecyclerView;
-    private static SwipeRefreshLayout mSwipeRefreshLayout;
+    private  RecyclerView mRecyclerView;
+    private  SwipeRefreshLayout mSwipeRefreshLayout;
     private  NewsListPresenter mNewsListPresenter;
-    private static RecyclerViewAdapter mRecyclerViewAdapter;
-    private static boolean loading=false;
+    private RecyclerViewAdapter mRecyclerViewAdapter;
+    private boolean loading=false;
     private int PAGE=2;//要获取的下一页
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,8 +36,6 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     }
 
     public static NewsFragmentViewImpl newInstance(int index) {
-
-
 
         Bundle args = new Bundle();
         args.putInt("index",index);
@@ -82,19 +80,24 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 super.onScrolled(recyclerView, dx, dy);
                 int totalcount=layoutManger.getItemCount();
                 int lastcount=layoutManger.findLastVisibleItemPosition();
-                if (!loading&&lastcount+2>=totalcount)
+                System.out.println("Loading="+loading+"   lastcount"+lastcount+"  totalcount"+totalcount);
+                if (lastcount+2>=totalcount)
                 {
                     Bundle bundle=getArguments();
-                    loading=true;
+//                    loading=true;
                     mNewsListPresenter.loadNews(PAGE);
                     PAGE++;
-                    System.out.println("已获取");
+                    System.out.println("已获取------->");
                     //mRecyclerView.setAdapter(mRecyclerViewAdapter);
-                    Log.d("jcy",".....");
+                    //Log.d("jcy",".....");
                 }
             }
         });
         return view;
+    }
+
+    public boolean isLoading() {
+        return loading;
     }
 
     @Override
@@ -120,6 +123,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     @Override
     public void setLoading(boolean loading) {
         this.loading=loading;
+        System.out.println("loading状态改变................" + this.loading);
     }
 
     @Override

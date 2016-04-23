@@ -46,9 +46,12 @@ public class NewsListPresenterImpl implements NewsListPresenter{
 
     @Override
     public void loadNews(int Page) {
-        futureTask=new FutureTask<>(new AsyncGetMoreNews(Page));
-        new Thread(futureTask).start();
-        //List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
+        if(!newsFragmentView.isLoading()) {
+            newsFragmentView.setLoading(true);
+            futureTask = new FutureTask<>(new AsyncGetMoreNews(Page));
+            new Thread(futureTask).start();
+            //List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
+        }
 
     }
 
@@ -89,9 +92,11 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     {
         @Override
         public void handleMessage(Message msg) {
+            System.out.println("presenter----> 1");
             if (msg.what==0x123)
             {
                 try {
+                    System.out.println("presenter----> 2");
                     List<NewsBean> beanList=new ArrayList<>();
                     beanList=futureTask.get();
                     newsBeanList.addAll(beanList);
