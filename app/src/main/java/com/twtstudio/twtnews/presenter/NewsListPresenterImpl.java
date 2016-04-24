@@ -27,9 +27,9 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     Handler handler=new MyHandler();
     FutureTask<List<NewsBean>> futureTask;
     FutureTask<List<NewsBean>> futureTask0;
-    public NewsListPresenterImpl(int TYPE) {
+    public NewsListPresenterImpl(int TYPE,NewsFragmentViewImpl fragmentView) {
         this.getNewsList=new GetNewsListImpl2();
-        this.newsFragmentView=new NewsFragmentViewImpl();
+        this.newsFragmentView=fragmentView;
         this.TYPE=TYPE;
     }
 

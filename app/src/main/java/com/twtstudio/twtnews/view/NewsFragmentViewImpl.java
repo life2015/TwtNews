@@ -27,7 +27,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     private  RecyclerView mRecyclerView;
     private  SwipeRefreshLayout mSwipeRefreshLayout;
     private  NewsListPresenter mNewsListPresenter;
-    private RecyclerViewAdapter mRecyclerViewAdapter;
+    private  RecyclerViewAdapter mRecyclerViewAdapter;
     private boolean loading=false;
     private int PAGE=2;//要获取的下一页
     @Override
@@ -47,12 +47,27 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     @Nullable
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("jcy","oncreteview-------->");
         View view=inflater.inflate(R.layout.content_main,container,false);
+
         mRecyclerView= (RecyclerView) view.findViewById(R.id.recyclerView);
         mSwipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeColors(Color.RED,Color.BLUE,Color.YELLOW,Color.GREEN);
-        mNewsListPresenter=new NewsListPresenterImpl(getArguments().getInt("index"));
+
+        mNewsListPresenter=new NewsListPresenterImpl(getArguments().getInt("index"),this);
+
         mRecyclerViewAdapter=new RecyclerViewAdapter(null,getActivity());
+
+        Log.d("jcy","viewok---------->");
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        final LinearLayoutManager layoutManger=new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManger);
+        mRecyclerView.setHasFixedSize(true);
+        //System.out.println(mSwipeRefreshLayout==null);
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -69,11 +84,8 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 PAGE=2;
             }
         });
-        final LinearLayoutManager layoutManger=new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManger);
-        mRecyclerView.setHasFixedSize(true);
-        //实例化adapter，后面传给presenter
 
+        //实例化adapter，后面传给presenter
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -93,7 +105,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 }
             }
         });
-        return view;
+        super.onResume();
     }
 
     public boolean isLoading() {
@@ -103,6 +115,12 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     @Override
     public void refresh(boolean flag ) {
         mSwipeRefreshLayout.setRefreshing(flag);
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d("jcy","destory--------->");
+        super.onDestroyView();
     }
 
     @Override
