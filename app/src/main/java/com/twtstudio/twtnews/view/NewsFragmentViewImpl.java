@@ -59,11 +59,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
         mRecyclerViewAdapter=new RecyclerViewAdapter(null,getActivity());
 
         Log.d("jcy","viewok---------->");
-        return view;
-    }
-
-    @Override
-    public void onResume() {
+        //start
         final LinearLayoutManager layoutManger=new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManger);
         mRecyclerView.setHasFixedSize(true);
@@ -92,7 +88,6 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 super.onScrolled(recyclerView, dx, dy);
                 int totalcount=layoutManger.getItemCount();
                 int lastcount=layoutManger.findLastVisibleItemPosition();
-                System.out.println("Loading="+loading+"   lastcount"+lastcount+"  totalcount"+totalcount);
                 if (lastcount+2>=totalcount)
                 {
                     Bundle bundle=getArguments();
@@ -105,6 +100,14 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
                 }
             }
         });
+        //end
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+
+        //相关代码写在onresume里面会导致疯狂刷新
         super.onResume();
     }
 

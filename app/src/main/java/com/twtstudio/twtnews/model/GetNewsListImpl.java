@@ -7,6 +7,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.twtstudio.twtnews.NetUtils;
+import com.twtstudio.twtnews.presenter.NewsListPresenter;
+import com.twtstudio.twtnews.presenter.NewsListPresenterImpl;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,26 +26,25 @@ public class GetNewsListImpl implements GetNewsList {
     String API_NEWS_PAGE="/page/";
     int TYPE=1;
     int PAGE=1;
-    boolean getting=false;
+    NewsListPresenter newsListPresenter;
+    public GetNewsListImpl(NewsListPresenterImpl newsListPresenter) {
+        this.newsListPresenter=newsListPresenter;
+    }
+
     @Override
-    public List<NewsBean> getFirstPage(int Type) {
+    public void getFirstPage(int Type) {
         if (beanList!=null)
         {
             beanList.clear();
         }
 
         new GetNewsTask().execute(Type,1);
-        while (getting)
-        {
-            System.out.println("getting");
-        }
-        return beanList;
+
     }
 
     @Override
-    public List<NewsBean> getMore(int Type, int page) {
+    public void getMore(int Type, int page) {
         new GetNewsTask().execute(Type,page);
-        return beanList;
 
 
     }
@@ -55,7 +56,7 @@ public class GetNewsListImpl implements GetNewsList {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            getting=true;
+
         }
 
         @Override
@@ -78,8 +79,9 @@ public class GetNewsListImpl implements GetNewsList {
         protected void onPostExecute(List<NewsBean> tempNewsBeenList) {
             super.onPostExecute(tempNewsBeenList);
             //beanList.addAll(beanList.size(),tempNewsBeenList);
-            getting=false;
-            System.out.println(beanList);
+//            System.out.println(beanList);
+            newsListPresenter.postData(tempNewsBeenList);
+            Log.d("jcy","data------>posted");
         }
     }
 }

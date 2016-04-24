@@ -10,12 +10,12 @@ public interface GetNewsList {
      * 生成第一页新闻的数据源
      * @param Type
      */
-    List<NewsBean> getFirstPage(int Type);
+    void getFirstPage(int Type);
 
     /**
      * 输入type和，page，获取更多的新闻，配合footer使用
      * @param Type
      * @param page
      */
-    List<NewsBean> getMore(int Type,int page);
+    void getMore(int Type,int page);
 }

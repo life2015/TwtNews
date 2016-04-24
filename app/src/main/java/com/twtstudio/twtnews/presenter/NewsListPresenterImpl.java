@@ -3,8 +3,8 @@ package com.twtstudio.twtnews.presenter;
 import android.os.Handler;
 import android.os.Message;
 
-import com.twtstudio.twtnews.model.GetNewsListImpl2;
 import com.twtstudio.twtnews.model.GetNewsList;
+import com.twtstudio.twtnews.model.GetNewsListImpl;
 import com.twtstudio.twtnews.model.NewsBean;
 import com.twtstudio.twtnews.view.NewsFragmentView;
 import com.twtstudio.twtnews.view.NewsFragmentViewImpl;
@@ -24,11 +24,8 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     private NewsFragmentView newsFragmentView;
     private List<NewsBean> newsBeanList=new ArrayList<>();
     private int TYPE;
-    Handler handler=new MyHandler();
-    FutureTask<List<NewsBean>> futureTask;
-    FutureTask<List<NewsBean>> futureTask0;
     public NewsListPresenterImpl(int TYPE,NewsFragmentViewImpl fragmentView) {
-        this.getNewsList=new GetNewsListImpl2();
+        this.getNewsList=new GetNewsListImpl(this);
         this.newsFragmentView=fragmentView;
         this.TYPE=TYPE;
     }
@@ -38,8 +35,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     public void refresh() {
         newsFragmentView.refresh(true);
         newsBeanList.clear();
-        futureTask0=new FutureTask<>(new AsyncGetNews());
-        new Thread(futureTask0).start();
+        getNewsList.getFirstPage(TYPE);
         //List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
 
     }
@@ -48,8 +44,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     public void loadNews(int Page) {
         if(!newsFragmentView.isLoading()) {
             newsFragmentView.setLoading(true);
-            futureTask = new FutureTask<>(new AsyncGetMoreNews(Page));
-            new Thread(futureTask).start();
+            getNewsList.getMore(TYPE,Page);
             //List<NewsBean> beanList= getNewsList.getFirstPage(TYPE);
         }
 
@@ -59,75 +54,22 @@ public class NewsListPresenterImpl implements NewsListPresenter{
     public void showContent() {
 
     }
-    //获取第一页新闻的
-    class AsyncGetNews implements Callable<List<NewsBean>>
-    {
 
-        @Override
-        public List<NewsBean> call() throws Exception {
-            List<NewsBean> beanList=getNewsList.getFirstPage(TYPE);
-            handler.sendEmptyMessage(0x234);
-            return beanList;
-        }
-    }
-    //获取后面的新闻
-    class AsyncGetMoreNews implements Callable<List<NewsBean>>
-    {
-        int Page;
-
-        public AsyncGetMoreNews(int page) {
-            Page = page;
-        }
-
-        @Override
-        public List<NewsBean> call() throws Exception {
-            List<NewsBean> result=getNewsList.getMore(TYPE,Page);
-            handler.sendEmptyMessage(0x123);
-            System.out.println("消息已经发送");
-            return result;
-        }
+    @Override
+    public void postData(List<NewsBean> beanList) {
+        newsBeanList.addAll(beanList);
+        RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
+        newsFragmentView.setLoading(false);
+        newsFragmentView.refresh(false);
+        newsFragmentView.notifySet(adapter);
+        adapter.setNewses(newsBeanList);
+        adapter.notifyDataSetChanged();
     }
 
-    class MyHandler extends Handler
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println("presenter----> 1");
-            if (msg.what==0x123)
-            {
-                try {
-                    System.out.println("presenter----> 2");
-                    List<NewsBean> beanList=new ArrayList<>();
-                    beanList=futureTask.get();
-                    newsBeanList.addAll(beanList);
-                    RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
-                    newsFragmentView.setLoading(false);
-                    adapter.setNewses(newsBeanList);
-                    adapter.notifyDataSetChanged();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if (msg.what==0x234)
-            {
-                List<NewsBean> beanList=new ArrayList<>();
-                try {
-                    beanList=futureTask0.get();
-                    newsBeanList.addAll(beanList);
-                    RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
-                    newsFragmentView.notifySet(adapter);
-                    adapter.setNewses(newsBeanList);
-                    adapter.notifyDataSetChanged();
-                    newsFragmentView.refresh(false);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    @Override
+    public void postError() {
+        newsFragmentView.showError();
     }
+
 
 }

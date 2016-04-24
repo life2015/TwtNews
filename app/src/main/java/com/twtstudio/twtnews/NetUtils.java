@@ -1,8 +1,14 @@
 package com.twtstudio.twtnews;
 
+import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.google.gson.Gson;
 import com.twtstudio.twtnews.model.NewsBean;
 import com.twtstudio.twtnews.model.NewsListGson;
+import com.twtstudio.twtnews.view.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,5 +47,11 @@ public class NetUtils {
         if (newsListGson.error_code==-1)
         {return newsListGson.data;}
         else return null;
+    }
+    public static boolean isonline(Context context)
+    {
+        ConnectivityManager connectivityManager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=connectivityManager.getActiveNetworkInfo();
+        return (networkInfo!=null&&networkInfo.isConnected());
     }
 }
