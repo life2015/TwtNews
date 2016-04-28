@@ -22,7 +22,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
 
     private GetNewsList getNewsList;
     private NewsFragmentView newsFragmentView;
-    private List<NewsBean> newsBeanList=new ArrayList<>();
+    private  List<NewsBean> newsBeanList=new ArrayList<>();
     private int TYPE;
     public NewsListPresenterImpl(int TYPE,NewsFragmentViewImpl fragmentView) {
         this.getNewsList=new GetNewsListImpl(this);
@@ -61,8 +61,12 @@ public class NewsListPresenterImpl implements NewsListPresenter{
         RecyclerViewAdapter adapter=newsFragmentView.getAdapter();
         newsFragmentView.setLoading(false);
         newsFragmentView.refresh(false);
-        newsFragmentView.notifySet(adapter);
-        adapter.setNewses(newsBeanList);
+
+        if (newsBeanList.size()<=20)
+        {
+            adapter.setNewses(newsBeanList);
+            newsFragmentView.notifySet(adapter);
+        }
         adapter.notifyDataSetChanged();
     }
 
