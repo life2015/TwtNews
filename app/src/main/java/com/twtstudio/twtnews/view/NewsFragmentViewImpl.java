@@ -148,7 +148,7 @@ public class NewsFragmentViewImpl extends android.support.v4.app.Fragment implem
     }
 
     @Override
-    public void notifySet(RecyclerViewAdapter adapter) {
+    public void notifySetAdapter(RecyclerViewAdapter adapter) {
         mRecyclerView.setAdapter(adapter);
     }
 

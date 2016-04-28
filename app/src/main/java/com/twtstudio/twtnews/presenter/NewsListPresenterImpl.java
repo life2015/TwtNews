@@ -65,7 +65,7 @@ public class NewsListPresenterImpl implements NewsListPresenter{
         if (newsBeanList.size()<=20)
         {
             adapter.setNewses(newsBeanList);
-            newsFragmentView.notifySet(adapter);
+            newsFragmentView.notifySetAdapter(adapter);
         }
         adapter.notifyDataSetChanged();
     }

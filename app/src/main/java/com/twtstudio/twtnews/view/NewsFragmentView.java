@@ -31,6 +31,6 @@ public interface NewsFragmentView {
      * 通知UI线程设置adapter
      * @param adapter
      */
-    void notifySet(RecyclerViewAdapter adapter);
+    void notifySetAdapter(RecyclerViewAdapter adapter);
     boolean isLoading();
 }
